@@ -34,7 +34,7 @@ public class NotificationService {
     }
 
     public void sendTransactionEmail(String userId, String htmlContent) {
-        User user = userRepository.findById(userId)
+        UserDTO user = userClient.getUserById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
         if (user.getEmail() == null) {
