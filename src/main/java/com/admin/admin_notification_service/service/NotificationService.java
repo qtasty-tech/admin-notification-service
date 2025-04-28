@@ -1,5 +1,7 @@
 package com.admin.admin_notification_service.service;
 
+import com.admin.admin_notification_service.client.UserClient;
+import com.admin.admin_notification_service.dto.UserDTO;
 import com.admin.admin_notification_service.model.NotificationTemplate;
 import com.admin.admin_notification_service.model.User;
 import com.admin.admin_notification_service.repository.admin.NotificationTemplateRepository;
@@ -15,14 +17,15 @@ public class NotificationService {
     private final UserRepository userRepository;
     private final NotificationTemplateRepository templateRepository;
     private final EmailService emailService;
+    private final UserClient userClient;
 
     public void sendNotifications(String templateId) {
         NotificationTemplate template = templateRepository.findById(templateId)
                 .orElseThrow(() -> new RuntimeException("Template not found"));
 
-        List<User> users = userRepository.findAll();
+        List<UserDTO> users = userClient.getAllUsers();
 
-        for (User user : users) {
+        for (UserDTO user : users) {
             if (user.getEmail() != null && user.isVerified()) {
                 System.out.println("Sending email to: " + user.getEmail());
                 emailService.sendHtmlEmail(user.getEmail(), template.getSubject(), template.getContent());
