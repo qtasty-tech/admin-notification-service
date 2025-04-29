@@ -3,9 +3,7 @@ package com.admin.admin_notification_service.service;
 import com.admin.admin_notification_service.client.UserClient;
 import com.admin.admin_notification_service.dto.UserDTO;
 import com.admin.admin_notification_service.model.NotificationTemplate;
-import com.admin.admin_notification_service.model.User;
 import com.admin.admin_notification_service.repository.admin.NotificationTemplateRepository;
-import com.admin.admin_notification_service.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +12,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
-    private final UserRepository userRepository;
     private final NotificationTemplateRepository templateRepository;
     private final EmailService emailService;
     private final UserClient userClient;
@@ -50,8 +47,7 @@ public class NotificationService {
     }
 
     public void sendVerificationEmail(String userId, String htmlContent, String subject) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        UserDTO user = userClient.getUserById(userId);
 
         System.out.println("Sending -----------------------------------------------------------------------verify------------email to: " + user.getEmail());
         emailService.sendHtmlEmail("thisarajayas2@gmail.com", subject, htmlContent);
